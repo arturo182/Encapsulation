@@ -3,3 +3,9 @@ debug/*
 release/*
 *.pro.user*
 ui_*
+
+Encapsulation.pluginspec
+Encapsulation.json
+
+.moc
+.obj
