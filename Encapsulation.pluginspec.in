@@ -1,4 +1,4 @@
-<plugin name="Encapsulation" version=\"0.0.1\" compatVersion=\"0.0.1\">
+<plugin name=\"Encapsulation\" version=\"0.0.1\" compatVersion=\"0.0.1\">
     <vendor>arturo182</vendor>
     <copyright>(C) arturo182</copyright>
     <license>GNU Lesser General Public License Usage
