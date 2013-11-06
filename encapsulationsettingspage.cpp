@@ -5,8 +5,10 @@
 #include <cpptools/cpptoolsconstants.h>
 #include <coreplugin/icore.h>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QSettings>
+#include <QCoreApplication>
+#include <QSettings>
+
+#include <QTextStream>
 
 namespace Encapsulation
 {
@@ -15,25 +17,25 @@ namespace Internal
 
 void Settings::toSettings(QSettings *s) const
 {
-	s->beginGroup(Constants::SETTINGS_GROUP);
-	s->setValue(Constants::SETTING_PREFIX, fieldPrefix);
-	s->setValue(Constants::SETTING_SUFFIX, fieldSuffix);
-	s->setValue(Constants::SETTING_GETSTRING, addGetString);
-	s->setValue(Constants::SETTING_CCASE, useCamelCase);
-	s->setValue(Constants::SETTING_MUTFIRST, mutatorFirst);
-	s->setValue(Constants::SETTING_CPPFILE, cppFile);
+    s->beginGroup(QString::fromLatin1(Constants::SETTINGS_GROUP));
+    s->setValue(QString::fromLatin1(Constants::SETTING_PREFIX), fieldPrefix);
+    s->setValue(QString::fromLatin1(Constants::SETTING_SUFFIX), fieldSuffix);
+    s->setValue(QString::fromLatin1(Constants::SETTING_GETSTRING), addGetString);
+    s->setValue(QString::fromLatin1(Constants::SETTING_CCASE), useCamelCase);
+    s->setValue(QString::fromLatin1(Constants::SETTING_MUTFIRST), mutatorFirst);
+    s->setValue(QString::fromLatin1(Constants::SETTING_CPPFILE), cppFile);
 	s->endGroup();
 }
 
 void Settings::fromSettings(QSettings *s)
 {
-	s->beginGroup(Constants::SETTINGS_GROUP);
-	fieldPrefix = s->value(Constants::SETTING_PREFIX, "m_").toString();
-	fieldSuffix = s->value(Constants::SETTING_SUFFIX).toString();
-	addGetString = s->value(Constants::SETTING_GETSTRING, false).toBool();
-	useCamelCase = s->value(Constants::SETTING_CCASE, true).toBool();
-	mutatorFirst = s->value(Constants::SETTING_MUTFIRST, true).toBool();
-	cppFile = s->value(Constants::SETTING_CPPFILE, false).toBool();
+    s->beginGroup(QString::fromLatin1(Constants::SETTINGS_GROUP));
+    fieldPrefix = s->value(QString::fromLatin1(Constants::SETTING_PREFIX), QString::fromLatin1("m_")).toString();
+    fieldSuffix = s->value(QString::fromLatin1(Constants::SETTING_SUFFIX)).toString();
+    addGetString = s->value(QString::fromLatin1(Constants::SETTING_GETSTRING), false).toBool();
+    useCamelCase = s->value(QString::fromLatin1(Constants::SETTING_CCASE), true).toBool();
+    mutatorFirst = s->value(QString::fromLatin1(Constants::SETTING_MUTFIRST), true).toBool();
+    cppFile = s->value(QString::fromLatin1(Constants::SETTING_CPPFILE), false).toBool();
 	s->endGroup();
 }
 
@@ -52,7 +54,6 @@ SettingsWidget::SettingsWidget(QWidget *parent):
 	m_ui(new Ui::SettingsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->cppFileCheckBox->hide();
 }
 
 Settings SettingsWidget::settings() const
@@ -91,7 +92,7 @@ QString SettingsWidget::searchKeywords() const
 	<< m_ui->prefixLabel->text() << ' '
 	<< m_ui->suffixLabel->text() << ' ';
 
-	keywords.remove('&');
+    keywords.remove(QChar::fromLatin1('&'));
 
 	return keywords;
 }
@@ -99,32 +100,14 @@ QString SettingsWidget::searchKeywords() const
 SettingsPage::SettingsPage(QSharedPointer<Settings> &settings):
 	m_settings(settings)
 {
+    setId(Constants::PAGE_ID);
+    setDisplayName(QString::fromLatin1("Encapsulation"));
+    setCategory(CppTools::Constants::CPP_SETTINGS_CATEGORY);
+    setDisplayCategory(QCoreApplication::translate("CppTools", CppTools::Constants::CPP_SETTINGS_TR_CATEGORY));
+    setCategoryIcon(QString::fromLatin1(CppTools::Constants::SETTINGS_CATEGORY_CPP_ICON));
+
 }
 
-QString SettingsPage::id() const
-{
-	return Constants::PAGE_ID;
-}
-
-QString SettingsPage::displayName() const
-{
-	return "Encapsulation";
-}
-
-QString SettingsPage::category() const
-{
-	return CppTools::Constants::CPP_SETTINGS_CATEGORY;
-}
-
-QString SettingsPage::displayCategory() const
-{
-	return QCoreApplication::translate("CppTools", CppTools::Constants::CPP_SETTINGS_TR_CATEGORY);
-}
-
-QIcon SettingsPage::categoryIcon() const
-{
-	return QIcon(CppTools::Constants::SETTINGS_CATEGORY_CPP_ICON);
-}
 
 QWidget *SettingsPage::createPage(QWidget *parent)
 {
